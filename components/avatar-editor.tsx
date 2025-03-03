@@ -29,40 +29,36 @@ const defaultAvatar: AvatarData = {
   glasses: 0,
 };
 
-const getSavedAvatar = (): AvatarData => {
-  const savedAvatar = localStorage.getItem("avatarData");
-  try {
-    return savedAvatar ? JSON.parse(savedAvatar) : defaultAvatar;
-  } catch (error) {
-    console.error("Failed to parse saved avatar data:", error);
-    return defaultAvatar;
-  }
-};
-
 export default function AvatarEditor() {
-  // State to track the current avatar configuration
-  const [avatar, setAvatar] = useState<AvatarData>(getSavedAvatar);
-  // State to track which part is being edited
-  const [activePart, setActivePart] = useState<AvatarPart>("dress");
+  // State awal tanpa membaca localStorage langsung (menghindari SSR error)
+  const [avatar, setAvatar] = useState<AvatarData>(defaultAvatar);
 
-  // Load saved avatar data from localStorage on component mount
+  // State untuk cek apakah data sudah dimuat dari localStorage
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load avatar dari localStorage hanya di client-side
   useEffect(() => {
-    const savedAvatar = localStorage.getItem("avatarData");
-    if (savedAvatar) {
+    if (typeof window !== "undefined") {
       try {
-        setAvatar(JSON.parse(savedAvatar));
+        const savedAvatar = localStorage.getItem("avatarData");
+        if (savedAvatar) {
+          setAvatar(JSON.parse(savedAvatar));
+        }
       } catch (error) {
-        console.error("Failed to parse saved avatar data:", error);
+        console.error("Failed to load avatar from localStorage:", error);
       }
+      setIsLoaded(true);
     }
   }, []);
 
-  // Save avatar data to localStorage whenever it changes
+  // Simpan avatar ke localStorage setiap ada perubahan (hanya setelah data dimuat)
   useEffect(() => {
-    localStorage.setItem("avatarData", JSON.stringify(avatar));
-  }, [avatar]);
+    if (isLoaded) {
+      localStorage.setItem("avatarData", JSON.stringify(avatar));
+    }
+  }, [avatar, isLoaded]);
 
-  // Handle changing a specific avatar part
+  // Handle perubahan avatar
   const handlePartChange = (part: AvatarPart, value: number) => {
     setAvatar((prev) => ({
       ...prev,
@@ -70,7 +66,7 @@ export default function AvatarEditor() {
     }));
   };
 
-  // Reset avatar to default
+  // Reset avatar ke default
   const handleReset = () => {
     setAvatar(defaultAvatar);
   };
@@ -100,7 +96,12 @@ export default function AvatarEditor() {
           <div>
             <Tabs
               defaultValue="dress"
-              onValueChange={(value) => setActivePart(value as AvatarPart)}
+              onValueChange={(value) =>
+                handlePartChange(
+                  value as AvatarPart,
+                  avatar[value as AvatarPart]
+                )
+              }
             >
               <TabsList className="flex mb-4 overflow-x-auto">
                 <TabsTrigger className="w-[100px]" value="dress">
