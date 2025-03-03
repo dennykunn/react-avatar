@@ -1,61 +1,100 @@
-import type { AvatarData } from "@/components/avatar-editor"
+import type { AvatarData } from "@/components/avatar-editor";
 
 // Define the available options for each avatar part
 const avatarOptions = {
   hair: [
-    "/avatars/hair/hair-1.svg",
-    "/avatars/hair/hair-2.svg",
-    "/avatars/hair/hair-3.svg",
-    "/avatars/hair/hair-4.svg",
+    "/avatars/hairs/hair1.svg",
+    "/avatars/hairs/hair2.svg",
+    "/avatars/hairs/hair3.svg",
+    "/avatars/hairs/hair4.svg",
+    "/avatars/hairs/hair5.svg",
+    "/avatars/hairs/hair6.svg",
   ],
-  face: [
-    "/avatars/faces/face-1.svg",
-    "/avatars/faces/face-2.svg",
-    "/avatars/faces/face-3.svg",
-    "/avatars/faces/face-4.svg",
+  dress: [
+    "/avatars/dresses/dress1.svg",
+    "/avatars/dresses/dress2.svg",
+    "/avatars/dresses/dress3.svg",
+    "/avatars/dresses/dress4.svg",
+    "/avatars/dresses/dress5.svg",
+    "/avatars/dresses/dress6.svg",
   ],
-  clothes: [
-    "/avatars/clothes/clothes-1.svg",
-    "/avatars/clothes/clothes-2.svg",
-    "/avatars/clothes/clothes-3.svg",
-    "/avatars/clothes/clothes-4.svg",
+  mouth: [
+    "/avatars/mouths/mouth1.svg",
+    "/avatars/mouths/mouth2.svg",
+    "/avatars/mouths/mouth3.svg",
+    "/avatars/mouths/mouth4.svg",
+    "/avatars/mouths/mouth5.svg",
+    "/avatars/mouths/mouth6.svg",
+    "/avatars/mouths/mouth7.svg",
+    "/avatars/mouths/mouth8.svg",
   ],
-}
+  eyes: [
+    "/avatars/eyes/eyes1.svg",
+    "/avatars/eyes/eyes2.svg",
+    "/avatars/eyes/eyes3.svg",
+    "/avatars/eyes/eyes4.svg",
+  ],
+  glasses: ["/avatars/glasses/glass1.svg", "/avatars/glasses/no-glass.svg"],
+};
 
 interface AvatarDisplayProps {
-  avatarData: AvatarData
+  avatarData: AvatarData;
 }
 
 export default function AvatarDisplay({ avatarData }: AvatarDisplayProps) {
   return (
     <div className="relative w-64 h-64 bg-white rounded-full border-2 border-gray-200 overflow-hidden">
-      {/* Face layer (bottom) */}
-      <div className="absolute inset-0 -translate-y-3 flex items-center justify-center">
-        <img
-          src={avatarOptions.face[avatarData.face] || "/placeholder.svg"}
-          alt="Face"
-          className="w-1/2 h-1/2 object-contain"
-        />
-      </div>
-
-      {/* Clothes layer (middle) */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <img
-          src={avatarOptions.clothes[avatarData.clothes] || "/placeholder.svg"}
-          alt="Clothes"
-          className="w-[80%] h-[80%] object-contain"
-        />
-      </div>
-
       {/* Hair layer (top) */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center justify-center">
+      <div className="absolute inset-0 top-10 flex items-start justify-center">
         <img
           src={avatarOptions.hair[avatarData.hair] || "/placeholder.svg"}
           alt="Hair"
-          className="w-[100%] h-[100%] object-contain"
+          className="w-[40%] h-[40%] object-contain z-10"
+        />
+      </div>
+
+      {/* Eyes layer (middle) */}
+      <div className="absolute inset-0 -top-5 flex items-center justify-center">
+        <img
+          src={avatarOptions.eyes[avatarData.eyes] || "/placeholder.svg"}
+          alt="Eyes"
+          className="w-[20%] h-[20%] object-contain z-20"
+        />
+      </div>
+
+      {/* Glassess layer (middle) */}
+      {avatarOptions.glasses[avatarData.glasses] ==
+      "/avatars/glasses/no-glass.svg" ? (
+        ""
+      ) : (
+        <div className="absolute inset-0 -top-2.5 flex items-center justify-center">
+          <img
+            src={
+              avatarOptions.glasses[avatarData.glasses] || "/placeholder.svg"
+            }
+            alt="glasses"
+            className="w-[30%] h-[30%] object-contain z-20"
+          />
+        </div>
+      )}
+
+      {/* Mouth layer (middle) */}
+      <div className="absolute inset-0 top-12 flex items-center justify-center">
+        <img
+          src={avatarOptions.mouth[avatarData.mouth] || "/placeholder.svg"}
+          alt="Mouth"
+          className="w-[10%] h-[10%] object-contain z-20"
+        />
+      </div>
+
+      {/* Clothes layer (bottom) */}
+      <div className="absolute inset-0 flex items-end justify-center">
+        <img
+          src={avatarOptions.dress[avatarData.dress] || "/placeholder.svg"}
+          alt="Dress"
+          className="w-[70%]"
         />
       </div>
     </div>
-  )
+  );
 }
-
